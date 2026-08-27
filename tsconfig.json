@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    /* Environment & Engine Target */
+    "target": "ES2022",                          // Match modern Node.js runtime environments
+    "lib": ["ES2022"],                           // Pull in standard modern backend APIs
+
+    /* Pure ESM Module Resolution */
+    "module": "NodeNext",                        // Required for "type": "module" architecture
+    "moduleResolution": "NodeNext",              // Ensures Node natively resolves ESM imports
+
+    /* Output Paths */
+    "outDir": "./dist",                          // Build targets output here
+    "rootDir": "./src",                          // Strict root definition for compiler safety
+
+    /* Strictness & Quality Controls */
+    "strict": true,                              // Enable standard strict type checks
+    "noImplicitAny": true,                       // Block unintended untyped data variables
+    "noUncheckedIndexedAccess": true,            // Essential safeguard for database/API payload parsing
+    "forceConsistentCasingInFileNames": true,    // Enforce case sensitivity matching Linux systems
+    "skipLibCheck": true                         // Prevents compilation freezes from messy node_modules types
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
+}
