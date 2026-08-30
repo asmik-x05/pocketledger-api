@@ -3,6 +3,7 @@ import config from "./config/config.js";
 import connectDb from "./config/database.js";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.route.js";
+import categoryRoutes from "./routes/category.route.js";
 
 connectDb();
 
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/categories", categoryRoutes);
 
 app.listen(config.port, () => {
   console.log(`Example app listening on port ${config.port}`);
