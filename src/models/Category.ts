@@ -1,18 +1,19 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
-export interface ICategory extends Document {
-  userId: Schema.Types.ObjectId;
+export interface ICategory {
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
   name: string;
-  type?: "SAVING" | "WITHDRAWAL";
+  target: number;
 }
 
 const categorySchema = new Schema<ICategory>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    userId: { type: Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
-    type: { type: String, enum: ["SAVING", "WITHDRAWAL"] },
+    target: { type: Number, required: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model<ICategory>("Category", categorySchema);

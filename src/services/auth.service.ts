@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import User, { IUser } from "../models/User.js"; // Adjust import path to your Mongoose model
+import User, { IUser } from "../models/User.js"; 
 
 export interface RegisterInput {
   name: string;
