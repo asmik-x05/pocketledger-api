@@ -4,6 +4,7 @@ import connectDb from "./config/database.js";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.route.js";
 import categoryRoutes from "./routes/category.route.js";
+import transactionRoutes from "./routes/transaction.route.js";
 
 connectDb();
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/categories", categoryRoutes);
+app.use("/transaction", transactionRoutes);
 
 app.listen(config.port, () => {
   console.log(`Example app listening on port ${config.port}`);
