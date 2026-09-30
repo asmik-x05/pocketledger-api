@@ -5,10 +5,14 @@ import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import transactionRoutes from "./routes/transaction.route.js";
+import cors from "cors";
 
 connectDb();
 
 const app = express();
+
+app.use(cors());
+
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {

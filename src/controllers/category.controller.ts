@@ -1,7 +1,6 @@
+import { Types } from "mongoose";
 import { AuthenticatedRequest } from "../middlewares/auth.js";
-import categoryService, {  
-  ServiceError,
-} from "../services/category.service.js";
+import categoryService, { ServiceError } from "../services/category.service.js";
 import { Request, Response } from "express";
 
 const create = async (
@@ -9,9 +8,9 @@ const create = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
 
-    const category = await categoryService.create(req.body);
+    const category = await categoryService.create(req.body, userId);
     res.status(201).json(category);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;
@@ -24,9 +23,9 @@ const getAll = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
 
-    const categories = await categoryService.getAll(req.body.userId);
+    const categories = await categoryService.getAll(userId);
     res.status(200).json(categories);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;
@@ -38,13 +37,14 @@ const getOne = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
-    req.body.categoryId = req.params.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
+    const categoryId = req.params.id;
+    if (typeof categoryId !== "string") {
+      res.status(400).json({ message: "Invalid category ID" });
+      return;
+    }
 
-    const category = await categoryService.getOne(
-      req.body.categoryId,
-      req.body.userId,
-    );
+    const category = await categoryService.getOne(categoryId, userId);
     res.status(200).json(category);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;
@@ -57,14 +57,14 @@ const update = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
-    req.body.categoryId = req.params.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
+    const categoryId = req.params.id;
+    if (typeof categoryId !== "string") {
+      res.status(400).json({ message: "Invalid category ID" });
+      return;
+    }
 
-    const category = await categoryService.update(
-      req.body.categoryId,
-      req.body.userId,
-      req.body,
-    );
+    const category = await categoryService.update(categoryId, userId, req.body);
     res.status(200).json(category);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;
@@ -77,13 +77,14 @@ const remove = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
-    req.body.categoryId = req.params.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
+    const categoryId = req.params.id;
+    if (typeof categoryId !== "string") {
+      res.status(400).json({ message: "Invalid category ID" });
+      return;
+    }
 
-    const msg = await categoryService.remove(
-      req.body.categoryId,
-      req.body.userId,
-    );
+    const msg = await categoryService.remove(categoryId, userId);
     res.status(200).json(msg);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;

@@ -6,7 +6,6 @@ import Transaction, {
 import Category from "../models/Category.js";
 
 export interface CreateTransactionInput {
-  userId: Types.ObjectId;
   categoryId: Types.ObjectId;
   type: TransactionType;
   amount: number;
@@ -39,8 +38,9 @@ export interface UpdateTransactionInput {
 
 const createTransaction = async (
   data: CreateTransactionInput,
+  userId: Types.ObjectId,
 ): Promise<TransactionDTO> => {
-  const { userId, categoryId, type, amount, note, date } = data;
+  const { categoryId, type, amount, note, date } = data;
 
   const transaction: ITransaction = await Transaction.create({
     userId,
@@ -115,12 +115,16 @@ const getTransactionById = async (
 
 const updateTransaction = async (
   transactionId: string,
+  userId: Types.ObjectId,
   data: UpdateTransactionInput,
 ): Promise<TransactionDTO | null> => {
-  const transaction = await Transaction.findByIdAndUpdate(transactionId, data, {
-    new: true,
-  }).populate("categoryId", "name");
-
+  const transaction = await Transaction.findOneAndUpdate(
+    { _id: transactionId, userId },
+    data,
+    {
+      new: true,
+    },
+  ).populate("categoryId", "name");
   if (!transaction) {
     const error: ServiceError = {
       message: "Transaction not found",

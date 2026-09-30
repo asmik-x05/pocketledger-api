@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { AuthenticatedRequest } from "../middlewares/auth.js";
 import transactionService, {
   ServiceError,
@@ -9,8 +10,11 @@ const createTransaction = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
-    const transaction = await transactionService.createTransaction(req.body);
+    const userId = new Types.ObjectId(req.user?.id as string);
+    const transaction = await transactionService.createTransaction(
+      req.body,
+      userId,
+    );
     res.status(201).json(transaction);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;
@@ -23,10 +27,9 @@ const getAllTransactions = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
-    const transactions = await transactionService.getAllTransactions(
-      req.body.userId,
-    );
+    const userId = new Types.ObjectId(req.user?.id as string);
+
+    const transactions = await transactionService.getAllTransactions(userId);
     res.status(200).json(transactions);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;
@@ -39,7 +42,7 @@ const getTransactionById = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
     const transactionId = req.params.id;
     if (typeof transactionId !== "string") {
       res.status(400).json({ message: "Invalid transaction ID" });
@@ -48,7 +51,7 @@ const getTransactionById = async (
 
     const transaction = await transactionService.getTransactionById(
       transactionId,
-      req.body.userId,
+      userId,
     );
     res.status(200).json(transaction);
   } catch (error: any) {
@@ -67,9 +70,10 @@ const updateTransaction = async (
       res.status(400).json({ message: "Invalid transaction ID" });
       return;
     }
-    req.body.userId = req.user?.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
     const transaction = await transactionService.updateTransaction(
       transactionId,
+      userId,
       req.body,
     );
     res.status(200).json(transaction);
@@ -89,10 +93,10 @@ const deleteTransaction = async (
       res.status(400).json({ message: "Invalid transaction ID" });
       return;
     }
-    req.body.userId = req.user?.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
     const transaction = await transactionService.deleteTransaction(
       transactionId,
-      req.body.userId,
+      userId,
     );
     res.status(200).json({ message: "Transaction deleted successfully" });
   } catch (error: any) {
@@ -106,8 +110,8 @@ const getSummary = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
-    const summary = await transactionService.getSummary(req.body.userId);
+    const userId = new Types.ObjectId(req.user?.id as string);
+    const summary = await transactionService.getSummary(userId);
     res.status(200).json(summary);
   } catch (error: any) {
     const status = (error as ServiceError).status || 400;
@@ -120,7 +124,7 @@ const getCategorySummary = async (
   res: Response,
 ): Promise<void> => {
   try {
-    req.body.userId = req.user?.id;
+    const userId = new Types.ObjectId(req.user?.id as string);
     const category = req.params.cat;
     if (typeof category !== "string") {
       res.status(400).json({ message: "Invalid category name" });
@@ -128,7 +132,7 @@ const getCategorySummary = async (
     }
 
     const summary = await transactionService.getCategorySummary(
-      req.body.userId,
+      userId,
       category,
     );
     res.status(200).json(summary);

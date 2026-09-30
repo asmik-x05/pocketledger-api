@@ -3,7 +3,6 @@ import Category, { ICategory } from "../models/Category.js";
 
 export interface CreateCategoryInput {
   name: string;
-  userId: Types.ObjectId;
   target: number;
 }
 
@@ -24,8 +23,11 @@ export interface UpdateCategoryInput {
   target?: number;
 }
 
-const create = async (data: CreateCategoryInput): Promise<CategoryDTO> => {
-  const { name, userId, target } = data;
+const create = async (
+  data: CreateCategoryInput,
+  userId: Types.ObjectId,
+): Promise<CategoryDTO> => {
+  const { name, target } = data;
 
   const existingCategory = await Category.findOne({
     name,

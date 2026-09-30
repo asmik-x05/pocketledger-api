@@ -8,11 +8,10 @@ const validate =
       schema.parse(req.body);
       next();
     } catch (error) {
-      if (error instanceof ZodError) { 
-        const formattedError = z.treeifyError(error);
-
-        console.error(formattedError);
-        res.status(400).json({ errors: formattedError });
+      if (error instanceof ZodError) {
+        const firstIssue = error.issues[0];
+        const message = firstIssue?.message || "Validation failed";
+        res.status(400).json({ message });
         return;
       }
 
