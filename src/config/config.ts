@@ -9,6 +9,8 @@ const config = {
   jwt_secret: process.env.JWT_SECRET ?? "",
   app_url: process.env.APP_URL ?? "",
   version: process.env.VERSION ?? "",
+  user: process.env.EMAIL_USER ?? "",
+  pass: process.env.EMAIL_APP_PASSWORD ?? "",
 };
 
 export default config;
